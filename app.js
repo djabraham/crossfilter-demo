@@ -9,7 +9,7 @@ var App;
 
     var geoColors = d3.scale.quantize().domain([0,10])
         .range(["#D0D0D0", "#E2F2FF", "#C4E4FF", "#9ED2FF", "#81C5FF", "#6BBAFF", "#51AEFF","#36A2FF", "#1E96FF", "#0089FF", "#0061B5"]);
-    
+
     var geoProjections = {
         World : d3.geo.mercator().scale(95).translate([300, 300]),
         Europe : d3.geo.mercator().scale(550).translate([120, 720])
@@ -18,14 +18,14 @@ var App;
     // Modifies the label of a pie chart
     var formatLabelPie = function (chart) {
         var labels = chart.selectAll("text");
-        
+
         labels.each(function(d) {
             var el = d3.select(this);
             var lab = el.text();
             var words = lab.split(' ');
             el.text('');
             el.attr("transform", "scale(1.4) " + el.attr("transform"));
-            
+
             for (var i = 0; i < words.length; i++) {
                 var tspan = el.append('tspan').text(words[i]);
                 if (i > 0)
@@ -33,7 +33,7 @@ var App;
             }
         });
     };
-    
+
     // DataPoint is an Object
     function DataPoint(row) {
         this.transactionDate = parseDate(row.Transaction_date);
@@ -49,11 +49,11 @@ var App;
         this.latitude = parseFloat(row.Latitude);
         this.longitude = parseFloat(row.Longitude);
     }
-    
+
     // DataCrossFilters is an Object
     function DataCrossFilters(dataPoints) {
         this.pointsFilter = crossfilter(dataPoints);
-        
+
         this.dateDim = this.pointsFilter.dimension(function(d) { return d.transactionDate; });
         this.dateMin = this.dateDim.bottom(1)[0].transactionDate;
         this.dateMax = this.dateDim.top(1)[0].transactionDate;
@@ -70,7 +70,7 @@ var App;
 
         this.allPoints = this.pointsFilter.groupAll();
     }
-    
+
     function setSalesPieChart(name, dimension, grouping) {
         return dc.pieChart("#" + name)
             .width(300)
@@ -78,22 +78,22 @@ var App;
             .radius(140)
             .dimension(dimension)
             .group(grouping)
-            .title(function (d) { 
-                return "Sales by " + d.data.key + "\n" + 
+            .title(function (d) {
+                return "Sales by " + d.data.key + "\n" +
                     Math.floor(d.value / dataCrossFilters.allPoints.value() * 100) + '% (' + d.value + " Total)";
-            })            
+            })
             .renderTitle(true)
             .label(function (d) {
                 return d.data.key + ' ' + Math.floor(d.value / dataCrossFilters.allPoints.value() * 100) + '%';
             })
-            .renderlet(formatLabelPie);            
+            .renderlet(formatLabelPie);
     }
-    
-    function setDataPoints(rows) {
-        dataPoints = d3.csv.parse(rows, function(row) {
-            return new DataPoint(row);
-        });
-        
+
+    function setDataPoints(dataPoints) {
+        // dataPoints = d3.csv.parse(rows, function(row) {
+        //     return new DataPoint(row);
+        // });
+
         dataCrossFilters = new DataCrossFilters(dataPoints);
 
         charts.chartProduct = setSalesPieChart("chartProduct", dataCrossFilters.productDim, dataCrossFilters.productSales);
@@ -108,7 +108,7 @@ var App;
             .group(dataCrossFilters.stateSales)
             .colorDomain([0, 200])
             .colorCalculator(function (d) {
-                return geoColors(d || 0).toString(); 
+                return geoColors(d || 0).toString();
             })
             .overlayGeoJson(GeoData.US.Boundary.features, "state", function (d) {
                 return d.properties.name;
@@ -116,7 +116,7 @@ var App;
             .title(function (d) {
                 return GeoData.US.Label[d.key] + " (" + d.key + ")\nTotal Sales: " + (d.value ? d.value : 0);
             });
-            
+
         charts.chartCountry = dc.geoChoroplethChart("#chartCountry");
         charts.chartCountry
             .width(600)
@@ -126,7 +126,7 @@ var App;
             .group(dataCrossFilters.countrySales)
             .colorDomain([0, 200])
             .colorCalculator(function (d) {
-                return geoColors(d || 0).toString(); 
+                return geoColors(d || 0).toString();
             })
             .overlayGeoJson(GeoData.Country.Boundary.features, "country", function (d) {
                 return d.properties.name;
@@ -136,15 +136,15 @@ var App;
             });
 
         dc.renderAll();
-         
+
         console.log("App.setDataPoints: " + dataPoints.length);
     }
-    
+
     function setWorldProjection(proj) {
         charts.chartCountry.projection(geoProjections[proj]);
         dc.renderAll();
-    }      
-   
+    }
+
     App.charts = charts;
     App.dataPoints = dataPoints;
     App.dataCrossFilters = dataCrossFilters;
