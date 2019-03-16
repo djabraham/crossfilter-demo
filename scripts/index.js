@@ -12,7 +12,7 @@ function appLoader() {
   }, 250);
 }
 
-setTimeout(appLoader, 1000);
+setTimeout(appLoader, 100);
 
 var cardData = [
   {
