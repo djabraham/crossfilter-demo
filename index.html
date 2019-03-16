@@ -2,149 +2,160 @@
 <html>
 
 <head>
-    <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
-    <title>Interactive Graphics Demo</title>
-    <link href="favicon.ico" rel="shortcut icon" type="image/x-icon">
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+  <title>Dynamic Chart Demo</title>
+  <link href="favicon.ico" rel="shortcut icon" type="image/x-icon">
 
-    <link href="http://cdnjs.cloudflare.com/ajax/libs/dc/1.7.0/dc.css" rel="stylesheet" />
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/dc/1.7.0/dc.css" rel="stylesheet" />
 
-    <style>
-        body {
-            font-family: sans-serif;
-            padding: 0 10px;
-        }
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 0 10px;
+    }
 
-        @keyframes fadein {
-            from { opacity: 0; }
-            to   { opacity: 1; }
-        }
+    @keyframes fadein {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
 
-        .charts {
-            position: relative;
-            display: block;
-        }
+    .charts {
+      position: relative;
+      display: block;
+    }
 
-        .charts > div {
-            position: relative;
-            display: inline-block;
-            padding-bottom: 1.5em;
-            margin: 10px;
-        }
+    .charts>div {
+      position: relative;
+      display: inline-block;
+      padding-bottom: 1.5em;
+      margin: 10px;
+    }
 
-        .chart-title-centered {
-            transition-delay: 1s;
-            animation: fadein 4s;
-            position: absolute;
-            text-align: center;
-            font-size: 1.5em;
-            width: 100%;
-            bottom: 0;
-        }
+    .chart-title-centered {
+      transition-delay: 1s;
+      animation: fadein 4s;
+      position: absolute;
+      text-align: center;
+      font-size: 1.5em;
+      width: 100%;
+      bottom: 0;
+    }
 
-        div.dc-chart {
-            float: none;
-            overflow: hidden;
-        }
+    div.dc-chart {
+      float: none;
+      overflow: hidden;
+    }
 
-        .dc-chart path {
-            stroke: rgba(255, 255, 255, 1.0);
-            stroke-width: 1px;
-        }
+    .dc-chart path {
+      stroke: rgba(255, 255, 255, 1.0);
+      stroke-width: 1px;
+    }
 
-        .dc-chart g.selected path {
-            stroke: rgba(32, 32, 64, 1.0);
-            stroke-width: 1px;
-        }
+    .dc-chart g.selected path {
+      stroke: rgba(32, 32, 64, 1.0);
+      stroke-width: 1px;
+    }
 
-        .dc-chart g.deselected path {
-            stroke: rgba(32, 32, 64, 0.25);
-            stroke-width: 1px;
-        }
+    .dc-chart g.deselected path {
+      stroke: rgba(32, 32, 64, 0.25);
+      stroke-width: 1px;
+    }
 
-        .dc-chart text.pie-slice {
-            animation: fadein 2s;
-            fill: rgba(32, 32, 64, 1.0);
-            font-size: 7.5pt;
-        }
+    .dc-chart text.pie-slice {
+      animation: fadein 2s;
+      fill: rgba(32, 32, 64, 1.0);
+      font-size: 7.5pt;
+    }
 
-        .title {
-            font-size: 22px;
-            font-weight: bold;
-        }
+    .title {
+      font-size: 22px;
+      font-weight: bold;
+    }
 
-        .sub-title {
-            font-size: 14px;
-            font-weight: normal;
-        }
+    .sub-title {
+      font-size: 14px;
+      font-weight: normal;
+    }
 
-        .midriff {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            height: 100%;
-        }
+    .midriff {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 100%;
+    }
 
-        .assets {
-            opacity: 0.01;
-            position: relative;
-            transform-origin: top left;
-            transform: scale(0.80);
-        }
-    </style>
+    .assets {
+      opacity: 0.01;
+      position: relative;
+      transform-origin: top left;
+      transform: scale(0.80);
+    }
+  </style>
 
 
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/dc/1.7.0/dc.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.js"></script>
-    <script src="geoData.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.5.6/d3.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/dc/1.7.0/dc.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.js"></script>
+  <script src="geoData.js"></script>
 </head>
 
 <body>
-    <div class="container">
-        <div id="loading" class="title">Loading...</div>
-        <div id="content" class="assets">
-            <div class="title">Interactive Graphics Demo <span class="sub-title">(click to drill down)</span></div>
-            <div class="charts">
-                <div id="chartState">
-                    <div class="chart-title-centered">Sales by State</div>
-                </div>
-            </div>
-            <div class="charts">
-                <div id="chartProduct">
-                    <div class="chart-title-centered">Sales by Product</div>
-                </div>
-                <div id="chartPayment">
-                    <div class="chart-title-centered">Sales by Payment Type</div>
-                </div>
-            </div>
-            <div class="charts">
-                <div id="chartCountry">
-                    <div class="chart-title-centered">Sales by Country
-                        <select onchange="App.setWorldProjection(this.value)">
-<option>World</option>
-<option>Europe</option>
-</select>
-</div>
-</div>
-</div>
-</div>
-</div>
+  <div class="container">
+    <div id="loading" class="title">Loading...</div>
+    <div id="content" class="assets">
+      <div class="title">Interactive Data Demo</div>
+      <div class="title">d3.js and Crossfilter
+        <span class="sub-title">(click to drill down)</span>
+      </div>
 
-<br />
-<br />
+      <div class="charts">
+        <div id="chartState">
+          <div class="chart-title-centered">Sales by State</div>
+        </div>
+      </div>
+      <div class="charts">
+        <div id="chartProduct">
+          <div class="chart-title-centered">Sales by Product</div>
+        </div>
+        <div id="chartPayment">
+          <div class="chart-title-centered">Sales by Payment Type</div>
+        </div>
+      </div>
+      <div class="charts">
+        <div id="chartCountry">
+          <div class="chart-title-centered">Sales by Country
+            <select onchange="App.setWorldProjection(this.value)">
+              <option>World</option>
+              <option>Europe</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<script src="app.js"></script>
+  <br />
+  <br />
 
-<script>
+  <script src="app.js"></script>
+
+  <script>
     window.onload = function () {
-        App.setDataPoints(cardData);
+      var App = {};
+      AppInit(App);
 
-        document.getElementById('loading').style.display = 'none';
-        setTimeout(function () {
-            document.getElementById('content').style.opacity = 1.0;
-        }, 250);
+      App.setDataPoints(cardData);
+
+      document.getElementById('loading').style.display = 'none';
+      setTimeout(function () {
+        document.getElementById('content').style.opacity = 1.0;
+      }, 250);
     }
 
     var cardData = [
@@ -14121,6 +14132,6 @@
         "longitude": -89.40111
       }
     ]
-</script>
+  </script>
 
 </html>

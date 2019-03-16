@@ -1,5 +1,5 @@
-var App;
-(function (App) {
+
+function AppInit (App) {
     var charts = {};
     var dataPoints = null;
     var dataCrossFilters = null;
@@ -150,5 +150,5 @@ var App;
     App.dataCrossFilters = dataCrossFilters;
     App.setDataPoints = setDataPoints;
     App.setWorldProjection = setWorldProjection;
-})(App || (App = {}));
+};
 
