@@ -76,8 +76,13 @@
       font-weight: bold;
     }
 
-    .sub-title {
+    .title-subtext {
       font-size: 14px;
+      font-weight: normal;
+    }
+
+    .title-tonedown {
+      font-size: 20px;
       font-weight: normal;
     }
 
@@ -109,9 +114,8 @@
   <div class="container">
     <div id="loading" class="title">Loading...</div>
     <div id="content" class="assets">
-      <div class="title">Interactive Data Demo</div>
-      <div class="title">d3.js and Crossfilter
-        <span class="sub-title">(click to drill down)</span>
+      <div class="title">Interactive Data Demo <span class="title-tonedown">features</span> d3.js <span class="title-tonedown">&amp;</span> Crossfilter
+        <span class="title-subtext">(by Daniel Abraham)</span>
       </div>
 
       <div class="charts">
