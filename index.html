@@ -101,18 +101,24 @@
       transform-origin: top left;
       transform: scale(0.80);
     }
+
+    .loading {
+      margin-top: 20px;
+    }
   </style>
 
 </head>
 
 <body>
   <div class="container">
-    <div id="loading" class="title">Loading...</div>
-    <div id="content" class="assets">
-      <div class="title">Interactive Data Demo <span class="title-tonedown">features</span> d3.js <span class="title-tonedown">&amp;</span> Crossfilter
-        <span class="title-subtext">(by Daniel Abraham)</span>
-      </div>
+    <div class="title">Interactive Data Demo
+      <span class="title-tonedown">features</span> d3.js
+      <span class="title-tonedown">&amp;</span> Crossfilter
+      <span class="title-subtext">(by Daniel Abraham)</span>
+    </div>
 
+    <div id="loading" class="loading">Loading...</div>
+    <div id="content" class="assets">
       <div class="charts">
         <div id="chartState">
           <div class="chart-title-centered">Sales by State</div>
