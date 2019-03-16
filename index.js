@@ -1,7 +1,7 @@
 
+var App = {};
 
 function appLoader() {
-  var App = {};
   AppInit(App);
 
   App.setDataPoints(cardData);
